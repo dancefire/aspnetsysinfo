@@ -1,4 +1,4 @@
-[http://code.google.com/p/aspnetsysinfo/ English]
+[ [http://code.google.com/p/aspnetsysinfo/ English] ]
 ==简介==
 这个项目实现了一个ASP.Net的系统信息探针(探测器)。它用一个aspx页面取得并显示尽量多的主机信息。这与PHP中的*phpinfo()*很相似。
 
