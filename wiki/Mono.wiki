@@ -1,5 +1,3 @@
-#Information relative to Mono under Linux
-
 = Introduction =
 
 By default, the mod_mono is running .Net Framework 1.1. To turn it to 2.0, you may need modify the Apache configuration file.
