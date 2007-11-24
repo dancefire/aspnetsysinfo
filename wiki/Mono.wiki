@@ -1,0 +1,19 @@
+#Information relative to Mono under Linux
+
+= Introduction =
+
+By default, the mod_mono is running .Net Framework 1.1. To turn it to 2.0, you may need modify the Apache configuration file.
+
+= Details =
+
+== mod_mono.conf ==
+
+You can modify the general configuration file to affect all site configuration. To do this, modify the `mod_mono.conf` (e.g. `/etc/httpd/conf.d/mod_mono.conf` in Fedora), Add following line to `<IfModule !mod_mono.c>` section:
+
+   `MonoServerPath /usr/bin/mod-mono-server2`
+
+== _Site_ configuration file ==
+
+You can modify the site file which will affect the site only. To do this, just add the line below to site configuration file:
+
+   `MonoServerPath /usr/bin/mod-mono-server2`
