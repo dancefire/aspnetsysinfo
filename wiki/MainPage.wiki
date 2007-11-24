@@ -1,13 +1,13 @@
 #labels Featured,Phase-Design,Phase-Requirements
 [ [MainPage_zh_CN 中文] ]
 
-==Introduction==
+= Introduction =
 
 The project is a ASP.Net System Information Prober. It's a single page which trying to get as much as possible of useful hosting information. The concept is similar to PHP page which contains `phpinfo()`.
 
-==Information Probed==
+= Information Probed =
 
-===System Information===
+== System Information ==
   * Server Name
   * Server IP
   * Server Domain
@@ -25,7 +25,7 @@ The project is a ASP.Net System Information Prober. It's a single page which try
   * System Uptime
   * Script Timeout
 
-===Processor Information===
+== Processor Information ==
   * Number of Processor
   * Processor Id
   * Processor Type
@@ -33,7 +33,7 @@ The project is a ASP.Net System Information Prober. It's a single page which try
   * Processor OEM Id
   * Page Size
 
-===Memory Information===
+== Memory Information ==
   * Current Working Set
   * Physical Memory Size
   * Physical Free Memory Size
@@ -43,7 +43,7 @@ The project is a ASP.Net System Information Prober. It's a single page which try
   * Virtual Memory Size
   * Available Memory Size
 
-===Storage Information===
+== Storage Information ==
   * Logical Driver Information
   * Drive name
   * Volume label
@@ -51,15 +51,15 @@ The project is a ASP.Net System Information Prober. It's a single page which try
   * Drive type
   * free and total space.
 
-===Request Headers===
+== Request Headers ==
 
-===Server Variables===
+== Server Variables ==
 
-===Environment Variables===
+== Environment Variables ==
 
-===Session Information===
+== Session Information ==
 
-===System COM Components===
+== System COM Components ==
   * `Adodb.Connection`
   * `Adodb.RecordSet`
   * `Adodb.Stream`
@@ -76,7 +76,7 @@ The project is a ASP.Net System Information Prober. It's a single page which try
   * `IISSample.ContentRotator`
   * `IISSample.PageCounter`
 
-===Mail COM Components===
+== Mail COM Components ==
   * `JMail.SMTPMail`
   * `JMail.Message`
   * `CDONTS.NewMail`
@@ -87,7 +87,7 @@ The project is a ASP.Net System Information Prober. It's a single page which try
   * `SmtpMail.SmtpMail`
   * `Geocel.Mailer`
 
-===Upload COM Components===
+== Upload COM Components ==
   * `LyfUpload.UploadFile`
   * `Persits.Upload`
   * `Ironsoft.UpLoad`
@@ -97,7 +97,7 @@ The project is a ASP.Net System Information Prober. It's a single page which try
   * `Dundas.Upload`
   * `w3.upload`
 
-===Graphics COM Components===
+== Graphics COM Components ==
   * `SoftArtisans.ImageGen`
   * `W3Image.Image`
   * `Persits.Jpeg`
@@ -105,12 +105,12 @@ The project is a ASP.Net System Information Prober. It's a single page which try
   * `Ironsoft.DrawPic`
   * `Ironsoft.FlashCapture`
 
-===Other COM Components===
+== Other COM Components ==
   * `dyy.zipsvr`
   * `hin2.com_iis`
   * `Socket.TCP`
 
-==Requirement==
+= Requirement =
 
-It will support both IIS server on Windows Server and Apache with [http://www.mono-project.com/ASP.NET Mono] on Linux/Unix.
+It will support both IIS server on Windows Server and Apache with [Mono Mono] on Linux/Unix.
 .Net 2.0 framework or above is required.
