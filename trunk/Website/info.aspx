@@ -1,10 +1,31 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" %>
-
-<%@ Import Namespace="System.Collections.Generic" %>
-<%@ Import Namespace="System.Xml.Serialization" %>
 <%@ Import Namespace="System.Runtime.InteropServices" %>
 <%@ Import Namespace="System.IO" %>
-
+<%@ Import Namespace="System.Data" %>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>System Information</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style type="text/css">
+      a:link {color: #000099; text-decoration: none; background-color: #ffffff;}
+      a:hover {text-decoration: underline;}
+      body {font-family: Georgia, "Times New Roman", Times, serif; text-align: center}
+      table {margin-left: auto; margin-right: auto; text-align: left; border-collapse: collapse; border:0;}
+      td, th {border: 1px solid #000000; font-size: 75%; vertical-align: baseline;}
+      .title {font-size: 150%;}
+      .section {text-align: center; width=90%}
+      .header {text-align: center; background-color: #9999cc; font-weight: bold; color: #000000;}
+      .name {background-color: #ccccff; font-weight: bold; color: #000000;}
+      .value {background-color: #cccccc; color: #000000;}
+      .value_true {background-color: #cccccc; color: #00ff00;}
+      .value_false {background-color: #cccccc; color: #ff0000;}
+    </style>
+</head>
+<body>
+    <asp:Panel ID="PanelGeneral" runat="server"></asp:Panel>
+    <br id="br1" runat="server" />
+</body>
+</html>
 <script runat="server">
     #region Assistance Class
     public class SystemInfo
@@ -63,73 +84,28 @@
         }
 
     }
-
-    public class TNameValue<TName, TValue>
-    {
-        private TName name;
-
-        [XmlAttribute]
-        public TName Name
-        {
-            get { return name; }
-            set { this.name = value; }
-        }
-        private TValue value;
-
-        public TValue Value
-        {
-            get { return value; }
-            set { this.value = value; }
-        }
-        public TNameValue() { }
-        public TNameValue(TName name, TValue value) { this.name = name; this.value = value; }
-    }
-
-    public class NameValue : TNameValue<string, string>
-    {
-        public NameValue() : base() { }
-        public NameValue(string name, string value) : base(name, value) { }
-    }
-    public class Section : TNameValue<string, Information>
-    {
-        public Section() : base() { }
-        public Section(string name, Information value) : base(name, value) { }
-    }
-
-    [XmlRoot("Information")]
-    public class Information : List<NameValue>
-    {
-        public void Add(string name, string value) { this.Add(new NameValue(name, value)); }
-    }
-
-    [XmlRoot("SectionList")]
-    public class SectionList : List<Section>
-    {
-        public void Add(string name, Information value) { this.Add(new Section(name, value)); }
-    }
     #endregion
 
     #region Get Information Function
 
-    private Information GetSystemInfo()
+    private DataTable GetSystemInfo()
     {
-        string text = string.Empty;
-        Information dict = new Information();
+        DataTable table = GenerateDataTable("System Information");
         //	Server Name
-        dict.Add("Server Name", Server.MachineName);
-        dict.Add("Server IP", Request.ServerVariables["LOCAl_ADDR"]);
-        dict.Add("Server Domain", Request.ServerVariables["Server_Name"]);
-        dict.Add("Server Port", Request.ServerVariables["Server_Port"]);
+        Assign(table, "Server Name", Server.MachineName);
+        Assign(table, "Server IP", Request.ServerVariables["LOCAl_ADDR"]);
+        Assign(table, "Server Domain", Request.ServerVariables["Server_Name"]);
+        Assign(table, "Server Port", Request.ServerVariables["Server_Port"]);
         //	Web Server
-        dict.Add("Web Server Version", Request.ServerVariables["Server_SoftWare"]);
+        Assign(table, "Web Server Version", Request.ServerVariables["Server_SoftWare"]);
         //	Path
-        dict.Add("Virtual Request Path", Request.FilePath);
-        dict.Add("Physical Request Path", Request.PhysicalPath);
-        dict.Add("Virtual Application Root Path", Request.ApplicationPath);
-        dict.Add("Physical Application Root Path", Request.PhysicalApplicationPath);
+        Assign(table, "Virtual Request Path", Request.FilePath);
+        Assign(table, "Physical Request Path", Request.PhysicalPath);
+        Assign(table, "Virtual Application Root Path", Request.ApplicationPath);
+        Assign(table, "Physical Application Root Path", Request.PhysicalApplicationPath);
         //	Platform
         OperatingSystem os = Environment.OSVersion;
-        text = string.Empty;
+        string text = string.Empty;
         switch (os.Platform)
         {
             case PlatformID.Win32Windows:
@@ -182,20 +158,20 @@
                 break;
         }
         text = string.Format("{0}{1} -- {2}", text, Environment.NewLine, os.ToString());
-        dict.Add("Operating System", text);
-        dict.Add("Operating System Installation Directory", Environment.SystemDirectory);
-        dict.Add(".Net Version", Environment.Version.ToString());
-        dict.Add(".Net Language", System.Globalization.CultureInfo.InstalledUICulture.EnglishName);
-        dict.Add("Server Current Time", DateTime.Now.ToString());
-        dict.Add("System Uptime", TimeSpan.FromMilliseconds(Environment.TickCount).ToString());
-        dict.Add("Script Timeout", TimeSpan.FromSeconds(Server.ScriptTimeout).ToString());
-        return dict;
+        Assign(table, "Operating System", text);
+        Assign(table, "Operating System Installation Directory", Environment.SystemDirectory);
+        Assign(table, ".Net Version", Environment.Version.ToString());
+        Assign(table, ".Net Language", System.Globalization.CultureInfo.InstalledUICulture.EnglishName);
+        Assign(table, "Server Current Time", DateTime.Now.ToString());
+        Assign(table, "System Uptime", TimeSpan.FromMilliseconds(Environment.TickCount).ToString());
+        Assign(table, "Script Timeout", TimeSpan.FromSeconds(Server.ScriptTimeout).ToString());
+        return table;
     }
-    private Information GetSystemStorageInfo()
+    private DataTable GetSystemStorageInfo()
     {
-        Information dict = new Information();
-        
-        try { dict.Add("Logical Driver Information", string.Join(", ", Directory.GetLogicalDrives()).Replace(Path.DirectorySeparatorChar.ToString(), "")); }
+        DataTable table = GenerateDataTable("Storage Information");
+
+        try { Assign(table, "Logical Driver Information", string.Join(", ", Directory.GetLogicalDrives()).Replace(Path.DirectorySeparatorChar.ToString(), "")); }
         catch (Exception) { }
 
         try
@@ -220,7 +196,7 @@
                         label = string.Format("{1,-10} {0}", d.Name, d.DriveType);
                     }
 
-                    dict.Add(
+                    Assign(table,
                         label,
                         size
                     );
@@ -230,154 +206,164 @@
         }
         catch (Exception)
         { }
-        
-        return dict;
+
+        return table;
     }
-    private Information GetSystemMemoryInfo()
+    private DataTable GetSystemMemoryInfo()
     {
-        Information dict = new Information();
-        dict.Add("Current Working Set", string.Format("{0,10} MB", (Environment.WorkingSet / (1024 * 1024)).ToString("N")));
+        DataTable table = GenerateDataTable("Memory Information"); ;
+        Assign(table, "Current Working Set", string.Format("{0,10} MB", (Environment.WorkingSet / (1024 * 1024)).ToString("N")));
         try
         {
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
             {
                 SystemInfo.MemoryInfo memory = SystemInfo.Memory;
-                dict.Add("Physical Memory Size", string.Format("{0,10} MB", (memory.dwTotalPhys / (1024 * 1024)).ToString("N")));
-                dict.Add("Physical Free Memory Size", string.Format("{0,10} MB", (memory.dwAvailPhys / (1024 * 1024)).ToString("N")));
-                dict.Add("Physical Used Memory Size", string.Format("{0,10} MB", (memory.dwMemoryLoad / (1024 * 1024)).ToString("N")));
-                dict.Add("PageFile Size", string.Format("{0,10} MB", (memory.dwTotalPageFile / (1024 * 1024)).ToString("N")));
-                dict.Add("Available PageFile Size", string.Format("{0,10} MB", (memory.dwAvailPageFile / (1024 * 1024)).ToString("N")));
-                dict.Add("Virtual Memory Size", string.Format("{0,10} MB", (memory.dwTotalVirtual / (1024 * 1024)).ToString("N")));
-                dict.Add("Available Memory Size", string.Format("{0,10} MB", (memory.dwAvailVirtual / (1024 * 1024)).ToString("N")));
+                Assign(table, "Physical Memory Size", string.Format("{0,10} MB", (memory.dwTotalPhys / (1024 * 1024)).ToString("N")));
+                Assign(table, "Physical Free Memory Size", string.Format("{0,10} MB", (memory.dwAvailPhys / (1024 * 1024)).ToString("N")));
+                Assign(table, "Physical Used Memory Size", string.Format("{0,10} MB", (memory.dwMemoryLoad / (1024 * 1024)).ToString("N")));
+                Assign(table, "PageFile Size", string.Format("{0,10} MB", (memory.dwTotalPageFile / (1024 * 1024)).ToString("N")));
+                Assign(table, "Available PageFile Size", string.Format("{0,10} MB", (memory.dwAvailPageFile / (1024 * 1024)).ToString("N")));
+                Assign(table, "Virtual Memory Size", string.Format("{0,10} MB", (memory.dwTotalVirtual / (1024 * 1024)).ToString("N")));
+                Assign(table, "Available Memory Size", string.Format("{0,10} MB", (memory.dwAvailVirtual / (1024 * 1024)).ToString("N")));
             }
         }
         catch (Exception) { }
-        return dict;
+        return table;
     }
-    private Information GetSystemProcessorInfo()
+    private DataTable GetSystemProcessorInfo()
     {
-        Information dict = new Information();
-        dict.Add("Number of Processor", Environment.ProcessorCount.ToString());
-        dict.Add("Processor Id", Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER"));
+        DataTable table = GenerateDataTable("Processor Information");
+        Assign(table, "Number of Processor", Environment.ProcessorCount.ToString());
+        Assign(table, "Processor Id", Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER"));
         try
         {
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
             {
                 SystemInfo.CpuInfo cpu = SystemInfo.Cpu;
-                dict.Add("Processor Type", cpu.dwProcessorType.ToString());
-                dict.Add("Processor Level", cpu.dwProcessorLevel.ToString());
-                dict.Add("Processor OEM Id", cpu.dwOemId.ToString());
-                dict.Add("Page Size", cpu.dwPageSize.ToString());
+                Assign(table, "Processor Type", cpu.dwProcessorType.ToString());
+                Assign(table, "Processor Level", cpu.dwProcessorLevel.ToString());
+                Assign(table, "Processor OEM Id", cpu.dwOemId.ToString());
+                Assign(table, "Page Size", cpu.dwPageSize.ToString());
             }
         }
         catch (Exception) { }
-        return dict;
+        return table;
     }
 
-    private Information GetServerVariables()
+    private DataTable GetServerVariables()
     {
-        Information dict = new Information();
+        DataTable table = GenerateDataTable("Server Variables");
         foreach (string key in Request.ServerVariables.AllKeys)
         {
-            dict.Add(key, Request.ServerVariables[key]);
+            Assign(table, key, Request.ServerVariables[key]);
         }
-        return dict;
+        return table;
     }
-    private Information GetEnvironmentVariables()
+    private DataTable GetEnvironmentVariables()
     {
-        Information dict = new Information();
+        DataTable table = GenerateDataTable("Environment Variables");
         foreach (DictionaryEntry de in System.Environment.GetEnvironmentVariables())
         {
-            dict.Add(de.Key.ToString(), de.Value.ToString());
+            Assign(table, de.Key.ToString(), de.Value.ToString());
         }
-        return dict;
+        return table;
     }
 
-    private Information GetSystemObjectInfo()
+    private DataTable GetSystemObjectInfo()
     {
-        Information dict = new Information();
-        dict.Add("Adodb.Connection", TestObject("Adodb.Connection").ToString());
-        dict.Add("Adodb.RecordSet", TestObject("Adodb.RecordSet").ToString());
-        dict.Add("Adodb.Stream", TestObject("Adodb.Stream").ToString());
-        dict.Add("Scripting.FileSystemObject", TestObject("Scripting.FileSystemObject").ToString());
-        dict.Add("Microsoft.XMLHTTP", TestObject("Microsoft.XMLHTTP").ToString());
-        dict.Add("WScript.Shell", TestObject("WScript.Shell").ToString());
-        dict.Add("MSWC.AdRotator", TestObject("MSWC.AdRotator").ToString());
-        dict.Add("MSWC.BrowserType", TestObject("MSWC.BrowserType").ToString());
-        dict.Add("MSWC.NextLink", TestObject("MSWC.NextLink").ToString());
-        dict.Add("MSWC.Tools", TestObject("MSWC.Tools").ToString());
-        dict.Add("MSWC.Status", TestObject("MSWC.Status").ToString());
-        dict.Add("MSWC.Counters", TestObject("MSWC.Counters").ToString());
-        dict.Add("IISSample.ContentRotator", TestObject("IISSample.ContentRotator").ToString());
-        dict.Add("IISSample.PageCounter", TestObject("IISSample.PageCounter").ToString());
-        dict.Add("MSWC.PermissionChecker", TestObject("MSWC.PermissionChecker").ToString());
-        return dict;
+        DataTable table = GenerateDataTable("System COM Component Information");
+        Assign(table, "Adodb.Connection", TestObject("Adodb.Connection").ToString());
+        Assign(table, "Adodb.RecordSet", TestObject("Adodb.RecordSet").ToString());
+        Assign(table, "Adodb.Stream", TestObject("Adodb.Stream").ToString());
+        Assign(table, "Scripting.FileSystemObject", TestObject("Scripting.FileSystemObject").ToString());
+        Assign(table, "Microsoft.XMLHTTP", TestObject("Microsoft.XMLHTTP").ToString());
+        Assign(table, "WScript.Shell", TestObject("WScript.Shell").ToString());
+        Assign(table, "MSWC.AdRotator", TestObject("MSWC.AdRotator").ToString());
+        Assign(table, "MSWC.BrowserType", TestObject("MSWC.BrowserType").ToString());
+        Assign(table, "MSWC.NextLink", TestObject("MSWC.NextLink").ToString());
+        Assign(table, "MSWC.Tools", TestObject("MSWC.Tools").ToString());
+        Assign(table, "MSWC.Status", TestObject("MSWC.Status").ToString());
+        Assign(table, "MSWC.Counters", TestObject("MSWC.Counters").ToString());
+        Assign(table, "IISSample.ContentRotator", TestObject("IISSample.ContentRotator").ToString());
+        Assign(table, "IISSample.PageCounter", TestObject("IISSample.PageCounter").ToString());
+        Assign(table, "MSWC.PermissionChecker", TestObject("MSWC.PermissionChecker").ToString());
+        return table;
     }
-    private Information GetMailObjectInfo()
+    private DataTable GetMailObjectInfo()
     {
-        Information dict = new Information();
-        dict.Add("JMail.SMTPMail", TestObject("JMail.SMTPMail").ToString());
-        dict.Add("JMail.Message", TestObject("JMail.Message").ToString());
-        dict.Add("CDONTS.NewMail", TestObject("CDONTS.NewMail").ToString());
-        dict.Add("CDO.Message", TestObject("CDO.Message").ToString());
-        dict.Add("Persits.MailSender", TestObject("Persits.MailSender").ToString());
-        dict.Add("SMTPsvg.Mailer", TestObject("SMTPsvg.Mailer").ToString());
-        dict.Add("DkQmail.Qmail", TestObject("DkQmail.Qmail").ToString());
-        dict.Add("SmtpMail.SmtpMail.1", TestObject("SmtpMail.SmtpMail.1").ToString());
-        dict.Add("Geocel.Mailer.1", TestObject("Geocel.Mailer.1").ToString());
-        return dict;
+        DataTable table = GenerateDataTable("Mail COM Component Information");
+        Assign(table, "JMail.SMTPMail", TestObject("JMail.SMTPMail").ToString());
+        Assign(table, "JMail.Message", TestObject("JMail.Message").ToString());
+        Assign(table, "CDONTS.NewMail", TestObject("CDONTS.NewMail").ToString());
+        Assign(table, "CDO.Message", TestObject("CDO.Message").ToString());
+        Assign(table, "Persits.MailSender", TestObject("Persits.MailSender").ToString());
+        Assign(table, "SMTPsvg.Mailer", TestObject("SMTPsvg.Mailer").ToString());
+        Assign(table, "DkQmail.Qmail", TestObject("DkQmail.Qmail").ToString());
+        Assign(table, "SmtpMail.SmtpMail.1", TestObject("SmtpMail.SmtpMail.1").ToString());
+        Assign(table, "Geocel.Mailer.1", TestObject("Geocel.Mailer.1").ToString());
+        return table;
     }
-    private Information GetUploadObjectInfo()
+    private DataTable GetUploadObjectInfo()
     {
-        Information dict = new Information();
-        dict.Add("LyfUpload.UploadFile", TestObject("LyfUpload.UploadFile").ToString());
-        dict.Add("Persits.Upload", TestObject("Persits.Upload").ToString());
-        dict.Add("Ironsoft.UpLoad", TestObject("Ironsoft.UpLoad").ToString());
-        dict.Add("aspcn.Upload", TestObject("aspcn.Upload").ToString());
-        dict.Add("SoftArtisans.FileUp", TestObject("SoftArtisans.FileUp").ToString());
-        dict.Add("SoftArtisans.FileManager", TestObject("SoftArtisans.FileManager").ToString());
-        dict.Add("Dundas.Upload", TestObject("Dundas.Upload").ToString());
-        dict.Add("w3.upload", TestObject("w3.upload").ToString());
-        return dict;
+        DataTable table = GenerateDataTable("Upload COM Component Information");
+        Assign(table, "LyfUpload.UploadFile", TestObject("LyfUpload.UploadFile").ToString());
+        Assign(table, "Persits.Upload", TestObject("Persits.Upload").ToString());
+        Assign(table, "Ironsoft.UpLoad", TestObject("Ironsoft.UpLoad").ToString());
+        Assign(table, "aspcn.Upload", TestObject("aspcn.Upload").ToString());
+        Assign(table, "SoftArtisans.FileUp", TestObject("SoftArtisans.FileUp").ToString());
+        Assign(table, "SoftArtisans.FileManager", TestObject("SoftArtisans.FileManager").ToString());
+        Assign(table, "Dundas.Upload", TestObject("Dundas.Upload").ToString());
+        Assign(table, "w3.upload", TestObject("w3.upload").ToString());
+        return table;
     }
-    private Information GetGraphicsObjectInfo()
+    private DataTable GetGraphicsObjectInfo()
     {
-        Information dict = new Information();
-        dict.Add("SoftArtisans.ImageGen", TestObject("SoftArtisans.ImageGen").ToString());
-        dict.Add("W3Image.Image", TestObject("W3Image.Image").ToString());
-        dict.Add("Persits.Jpeg", TestObject("Persits.Jpeg").ToString());
-        dict.Add("XY.Graphics", TestObject("XY.Graphics").ToString());
-        dict.Add("Ironsoft.DrawPic", TestObject("Ironsoft.DrawPic").ToString());
-        dict.Add("Ironsoft.FlashCapture", TestObject("Ironsoft.FlashCapture").ToString());
-        return dict;
+        DataTable table = GenerateDataTable("Graphics COM Component Information");
+        Assign(table, "SoftArtisans.ImageGen", TestObject("SoftArtisans.ImageGen").ToString());
+        Assign(table, "W3Image.Image", TestObject("W3Image.Image").ToString());
+        Assign(table, "Persits.Jpeg", TestObject("Persits.Jpeg").ToString());
+        Assign(table, "XY.Graphics", TestObject("XY.Graphics").ToString());
+        Assign(table, "Ironsoft.DrawPic", TestObject("Ironsoft.DrawPic").ToString());
+        Assign(table, "Ironsoft.FlashCapture", TestObject("Ironsoft.FlashCapture").ToString());
+        return table;
     }
-    private Information GetOtherObjectInfo()
+    private DataTable GetOtherObjectInfo()
     {
-        Information dict = new Information();
-        dict.Add("dyy.zipsvr", TestObject("dyy.zipsvr").ToString());
-        dict.Add("hin2.com_iis", TestObject("hin2.com_iis").ToString());
-        dict.Add("Socket.TCP", TestObject("Socket.TCP").ToString());
-        return dict;
+        DataTable table = GenerateDataTable("Other COM Component Information");
+        Assign(table, "dyy.zipsvr", TestObject("dyy.zipsvr").ToString());
+        Assign(table, "hin2.com_iis", TestObject("hin2.com_iis").ToString());
+        Assign(table, "Socket.TCP", TestObject("Socket.TCP").ToString());
+        return table;
     }
 
-    private Information GetSessionInfo()
+    private DataTable GetSessionInfo()
     {
-        Information dict = new Information();
-        dict.Add("Session Count", Session.Contents.Count.ToString());
-        dict.Add("Application Count", Application.Contents.Count.ToString());
-        return dict;
+        DataTable table = GenerateDataTable("Session Information");
+        Assign(table, "Session Count", Session.Contents.Count.ToString());
+        Assign(table, "Application Count", Application.Contents.Count.ToString());
+        return table;
     }
-    private Information GetRequestHeaderInfo()
+    private DataTable GetRequestHeaderInfo()
     {
-        Information dict = new Information();
+        DataTable table = GenerateDataTable("Request Headers");
         foreach (string key in Request.Headers.AllKeys)
         {
-            dict.Add(key, Request.Headers[key]);
+            Assign(table, key, Request.Headers[key]);
         }
-        return dict;
+        return table;
     }
 
     #endregion
+
+    #region Helper Methods
+
+    private DataTable GenerateDataTable(string name)
+    {
+        DataTable table = new DataTable(name);
+        table.Columns.Add("Name", typeof(string));
+        table.Columns.Add("Value", typeof(string));
+        return table;
+    }
 
     private bool TestObject(string progID)
     {
@@ -392,44 +378,89 @@
         }
     }
 
-    private void Output(Xml xml, SectionList obj, string xslPath)
+    private void Assign(DataTable table, string name, string value)
     {
-        XmlSerializer serializer = new XmlSerializer(typeof(SectionList));
-
-        using (StringWriter writer = new StringWriter())
-        {
-            serializer.Serialize(writer, obj);
-            xml.DocumentContent = writer.ToString();
-            xml.TransformSource = xslPath;
-        }
+        DataRow row = table.NewRow();
+        row["Name"] = name;
+        row["Value"] = value;
+        table.Rows.Add(row);
     }
+
+    private void LoadInformation(DataTable table)
+    {
+        DataGrid grid = new DataGrid();
+        BoundColumn col;
+
+        col = new BoundColumn();
+        col.DataField = "Name";
+        col.HeaderText = "Name";
+        col.ItemStyle.CssClass = "name";
+        grid.Columns.Add(col);
+
+        col = new BoundColumn();
+        col.DataField = "Value";
+        col.HeaderText = "Value";
+        col.ItemStyle.CssClass = "value";
+        grid.Columns.Add(col);
+
+        grid.AutoGenerateColumns = false;
+        grid.HeaderStyle.CssClass = "header";
+        grid.DataSource = new DataView(table);
+        grid.DataBind();
+        
+        
+        foreach(DataGridItem item in grid.Items)
+        {
+            if(item.Cells.Count == 2){
+                TableCell cell = item.Cells[1];
+                //  change true/false style
+                switch (cell.Text.ToLower())
+                {
+                    case "true":
+                        cell.CssClass = "value_true";
+                        break;
+                    case "false":
+                        cell.CssClass = "value_false";
+                        break;
+                }
+                //  wrap <pre> for text contain newline.
+                if (cell.Text.Contains(Environment.NewLine))
+                {
+                    cell.Text = string.Format("<pre>{0}</pre>", cell.Text);
+                }
+            }
+        }
+
+        HtmlGenericControl title = new HtmlGenericControl("h1");
+        title.InnerText = Server.HtmlEncode(table.TableName);
+        title.Attributes.Add("class", "title");
+
+        Panel panel = new Panel();
+        panel.CssClass = "section";
+
+        panel.Controls.Add(title);
+        panel.Controls.Add(grid);
+        panel.Controls.Add(new HtmlGenericControl("p"));
+        
+        PanelGeneral.Controls.Add(panel);
+    }
+
+    #endregion
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        SectionList sections = new SectionList();
-
-        sections.Add("System Information", GetSystemInfo());
-        sections.Add("Processor Information", GetSystemProcessorInfo());
-        sections.Add("Memory Information", GetSystemMemoryInfo());
-        sections.Add("System Storage Information", GetSystemStorageInfo());
-        sections.Add("Request Headers", GetRequestHeaderInfo());
-        sections.Add("Server Variables", GetServerVariables());
-        sections.Add("Environment Variables", GetEnvironmentVariables());
-        sections.Add("Session Information", GetSessionInfo());
-        sections.Add("System Object Information", GetSystemObjectInfo());
-        sections.Add("Mail Object Information", GetMailObjectInfo());
-        sections.Add("Upload Object Information", GetUploadObjectInfo());
-        sections.Add("Graphics Object Information", GetGraphicsObjectInfo());
-        sections.Add("Other Object Information", GetOtherObjectInfo());
-
-        string xslpath = ConfigurationSettings.AppSettings["XslPath"];
-
-        try { File.ReadAllText(MapPath(xslpath)); }
-        catch (Exception) { xslpath = string.Empty; }
-
-        if (string.IsNullOrEmpty(xslpath)) { xslpath = "~/info.xsl"; }
-
-        Output(xmlSections, sections, xslpath);
+        LoadInformation(GetSystemInfo());
+        LoadInformation(GetSystemProcessorInfo());
+        LoadInformation(GetSystemMemoryInfo());
+        LoadInformation(GetSystemStorageInfo());
+        LoadInformation(GetRequestHeaderInfo());
+        LoadInformation(GetServerVariables());
+        LoadInformation(GetEnvironmentVariables());
+        LoadInformation(GetSessionInfo());
+        LoadInformation(GetSystemObjectInfo());
+        LoadInformation(GetMailObjectInfo());
+        LoadInformation(GetUploadObjectInfo());
+        LoadInformation(GetGraphicsObjectInfo());
+        LoadInformation(GetOtherObjectInfo());
     }
 </script>
-<asp:xml id="xmlSections" runat="server"></asp:xml>
