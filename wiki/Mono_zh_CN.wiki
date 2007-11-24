@@ -1,0 +1,19 @@
+#labels Phase-Deploy
+[ [Mono English] ]
+= 简介 =
+
+mod_mono 默认运行的是.Net Framework 1.1。要想改成2.0，你需要修改Apache的配置文件。
+
+= 细节 =
+
+== mod_mono.conf ==
+
+你可以修改这个总体的配置文件，这样修改会影响所有的站点配置。修改`mod_mono.conf`文件(在Fedora系统上，它位于`/etc/httpd/conf.d/mod_mono.conf`)，在`<IfModule !mod_mono.c>`节内增加下面一行：
+
+   `MonoServerPath /usr/bin/mod-mono-server2`
+
+== _站点_ 配置文件 ==
+
+你可以修改某站点的配置文件，这样修改只会影响该站点。在站点配置文件中增加下面一行：
+
+   `MonoServerPath /usr/bin/mod-mono-server2`
