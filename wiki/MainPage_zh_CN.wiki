@@ -1,5 +1,5 @@
 #labels Featured,Phase-Design,Phase-Requirements
- [ [MainPage English] ]
+[ [MainPage English] ]
 
 = 简介 =
 
