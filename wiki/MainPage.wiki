@@ -110,6 +110,12 @@ The project is a ASP.Net System Information Prober. It's a single page which try
   * `hin2.com_iis`
   * `Socket.TCP`
 
+= Usage =
+
+Download current version zip file from [http://code.google.com/p/aspnetsysinfo/downloads/list the download page]. Decompress and put `info.aspx` and `info.xsl` on any web server directory with the permission and ability to run `*.aspx`. And visit the page use browser.
+
+E.g. put the files under web root of `www.example.com`, then visit the result by the link: `http://www.example.com/info.aspx`.
+
 = Requirement =
 
 It will support both IIS server on Windows Server and Apache with [Mono Mono] on Linux/Unix.
