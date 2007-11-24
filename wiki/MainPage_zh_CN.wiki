@@ -119,7 +119,13 @@
   * `hin2.com_iis`
   * `Socket.TCP`
 
-==需求==
+= 使用方法 =
+
+请从[http://code.google.com/p/aspnetsysinfo/downloads/list 下载页面]下载当前版本的zip文件，解压缩后，将 `info.aspx` 和 `info.xsl` 两个文件置于服务器上任何可以执行 `*.aspx` 的目录下，然后通过浏览器访问该文件即可。
+
+如，置于服务器 `www.example.com` 的Web根目录下，那么通过 `http://www.example.com/info.aspx`，就可以看到结果。
+
+= 需求 =
 
 该页面支持Windows的IIS服务器和Linux/Unix下的装有[Mono_zh_CN Mono]的Apache服务器。
 
