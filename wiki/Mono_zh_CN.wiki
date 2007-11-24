@@ -1,5 +1,5 @@
 #labels Phase-Deploy,Featured
-[ [Mono English] ]
+ [ [Mono English] ]
 = 简介 =
 
 mod_mono 默认运行的是.Net Framework 1.1。要想改成2.0，你需要修改Apache的配置文件。
@@ -17,3 +17,9 @@ mod_mono 默认运行的是.Net Framework 1.1。要想改成2.0，你需要修�
 你可以修改某站点的配置文件，这样修改只会影响该站点。在站点配置文件中增加下面一行：
 
    `MonoServerPath /usr/bin/mod-mono-server2`
+
+= 链接 =
+
+需要更多Mono运行ASP.Net的信息，请访问：
+
+http://www.mono-project.com/ASP.NET
