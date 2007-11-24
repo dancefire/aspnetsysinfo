@@ -1,0 +1,115 @@
+#labels Featured,Phase-Design
+[ [MainPage_zh_CN 中文] ]
+
+==Introduction==
+
+The project is a ASP.Net System Information Prober. It's a single page which trying to get as much as possible of useful hosting information. The concept is similar to PHP page which contains *phpinfo()*.
+
+==Information Probed==
+
+===System Information===
+  * Server Name
+  * Server IP
+  * Server Domain
+  * Server Port
+  * Web Server Version
+  * Virtual Request Path
+  * Physical Request Path
+  * Virtual Application Root Path
+  * Physical Application Root Path
+  * Operating System
+  * Operating System Installation Directory
+  * .Net Version
+  * .Net Language
+  * Server Current Time
+  * System Uptime
+  * Script Timeout
+
+===Processor Information===
+  * Number of Processor
+  * Processor Id
+  * Processor Type
+  * Processor Level
+  * Processor OEM Id
+  * Page Size
+
+===Memory Information===
+  * Current Working Set
+  * Physical Memory Size
+  * Physical Free Memory Size
+  * Physical Used Memory Size
+  * Page File Size
+  * Available Page File Size
+  * Virtual Memory Size
+  * Available Memory Size
+
+===Storage Information===
+  * Logical Driver Information
+  * Drive name
+  * Volume label
+  * Drive format
+  * Drive type
+  * free and total space.
+
+===Request Headers===
+
+===Server Variables===
+
+===Environment Variables===
+
+===Session Information===
+
+===System COM Components===
+  * Adodb.Connection
+  * Adodb.RecordSet
+  * Adodb.Stream
+  * Scripting.FileSystemObject
+  * Microsoft.XMLHTTP
+  * WScript.Shell
+  * MSWC.AdRotator
+  * MSWC.BrowserType
+  * MSWC.Counters
+  * MSWC.NextLink
+  * MSWC.PermissionChecker
+  * MSWC.Status
+  * MSWC.Tools
+  * IISSample.ContentRotator
+  * IISSample.PageCounter
+
+===Mail COM Components===
+  * JMail.SMTPMail
+  * JMail.Message
+  * CDONTS.NewMail
+  * CDO.Message
+  * Persits.MailSender
+  * SMTPsvg.Mailer
+  * DkQmail.Qmail
+  * SmtpMail.SmtpMail
+  * Geocel.Mailer
+
+===Upload COM Components===
+  * LyfUpload.UploadFile
+  * Persits.Upload
+  * Ironsoft.UpLoad
+  * aspcn.Upload
+  * SoftArtisans.FileUp
+  * SoftArtisans.FileManager
+  * Dundas.Upload
+  * w3.upload
+
+===Graphics COM Components===
+  * SoftArtisans.ImageGen
+  * W3Image.Image
+  * Persits.Jpeg
+  * XY.Graphics
+  * Ironsoft.DrawPic
+  * Ironsoft.FlashCapture
+
+===Other COM Components===
+  * dyy.zipsvr
+  * hin2.com_iis
+  * Socket.TCP
+
+==Requirement==
+It will support both IIS server on Windows Server and Apache with [http://www.mono-project.com/ASP.NET Mono] on Linux/Unix.
+.Net 2.0 framework or above is required.
