@@ -112,11 +112,17 @@ The project is a ASP.Net System Information Prober. It's a single page which try
 
 = Usage =
 
-Download current version zip file from [http://code.google.com/p/aspnetsysinfo/downloads/list the download page]. Decompress and put `info.aspx` and `info.xsl` on any web server directory with the permission and ability to run `*.aspx`. And visit the page use browser.
+Download current version zip file from [http://code.google.com/p/aspnetsysinfo/downloads/list the download page]. Decompress and put `info.aspx` on any web server directory with the permission and ability to run `*.aspx`. And visit the page use browser.
 
 E.g. put the files under web root of `www.example.com`, then visit the result by the link: `http://www.example.com/info.aspx`.
 
 = Requirement =
 
 It will support both IIS server on Windows Server and Apache with [Mono Mono] on Linux/Unix.
-.Net 2.0 framework or above is required.
+
+Supported Platform:
+
+Microsoft .Net Framework 1.0/1.1
+Microsoft .Net Framework 2.0
+Mono 1.0
+Mono 2.0
