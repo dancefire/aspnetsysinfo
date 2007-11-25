@@ -131,7 +131,7 @@
 
 支持的平台:
 
-  # Microsoft .Net Framework 1.0/1.1
-  # Microsoft .Net Framework 2.0
-  # Mono .Net Framework 1.0
-  # Mono .Net Framework 2.0
+  * Microsoft .Net Framework 1.0/1.1
+  * Microsoft .Net Framework 2.0
+  * Mono .Net Framework 1.0
+  * Mono .Net Framework 2.0
