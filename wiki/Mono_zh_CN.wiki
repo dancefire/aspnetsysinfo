@@ -1,7 +1,6 @@
 #labels Phase-Deploy,Featured
- [ [Mono English] ]
+[ [Mono English] ]
 = 简介 =
-
 
 
 = 链接 =
