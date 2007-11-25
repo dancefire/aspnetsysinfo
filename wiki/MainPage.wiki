@@ -122,7 +122,7 @@ It will support both IIS server on Windows Server and Apache with [Mono Mono] on
 
 Supported Platform:
 
-  # Microsoft .Net Framework 1.0/1.1
-  # Microsoft .Net Framework 2.0
-  # Mono .Net Framework 1.0
-  # Mono .Net Framework 2.0
+  * Microsoft .Net Framework 1.0/1.1
+  * Microsoft .Net Framework 2.0
+  * Mono .Net Framework 1.0
+  * Mono .Net Framework 2.0
