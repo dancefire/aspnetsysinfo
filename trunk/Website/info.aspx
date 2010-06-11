@@ -4,6 +4,7 @@
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Reflection" %>
 <%@ Import Namespace="System.Collections" %>
+<%@ Import Namespace="System.Drawing" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>System Information</title>
@@ -179,6 +180,287 @@
         Assign(table, "Server Current Time", DateTime.Now.ToString());
         Assign(table, "System Uptime", TimeSpan.FromMilliseconds(Environment.TickCount).ToString());
         Assign(table, "Script Timeout", TimeSpan.FromSeconds(Server.ScriptTimeout).ToString());
+        return table;
+    }
+    
+    private DataTable GetDotNetPermissionInfo()
+    {
+        DataTable table = GenerateDataTable(".Net Permission Information");
+        //  System.Web.AspNetHostingPermission
+        foreach (AspNetHostingPermissionLevel trust_level in
+            new AspNetHostingPermissionLevel[] {
+                AspNetHostingPermissionLevel.Unrestricted,
+                AspNetHostingPermissionLevel.High,
+                AspNetHostingPermissionLevel.Medium,
+                AspNetHostingPermissionLevel.Low,
+                AspNetHostingPermissionLevel.Minimal 
+            })
+        {
+            try
+            {
+                new System.Web.AspNetHostingPermission(trust_level).Demand();
+            }
+            catch (System.Security.SecurityException)
+            {
+                continue;
+            }
+
+            Assign(table, "System.Web.AspNetHostingPermission", trust_level.ToString());
+            break;
+        }
+
+        System.Security.Permissions.PermissionState[] permission_states = new System.Security.Permissions.PermissionState[] {
+            System.Security.Permissions.PermissionState.Unrestricted,
+            System.Security.Permissions.PermissionState.None
+        };
+
+        //  System.Configuration.ConfigurationPermission
+        foreach (System.Security.Permissions.PermissionState trust_level in permission_states)
+        {
+            try
+            {
+                new System.Configuration.ConfigurationPermission(trust_level).Demand();
+            }
+            catch (System.Security.SecurityException)
+            {
+                continue;
+            }
+            Assign(table, "System.Configuration.ConfigurationPermission", trust_level.ToString());
+            break;
+        }
+
+        //  System.Net.DnsPermission
+        foreach (System.Security.Permissions.PermissionState trust_level in permission_states)
+        {
+            try
+            {
+                new System.Net.DnsPermission(trust_level).Demand();
+            }
+            catch (System.Security.SecurityException)
+            {
+                continue;
+            }
+            Assign(table, "System.Net.DnsPermission", trust_level.ToString());
+            break;
+        }
+
+        //  System.Security.Permissions.EnvironmentPermission
+        foreach (System.Security.Permissions.PermissionState trust_level in permission_states)
+        {
+            try
+            {
+                new System.Security.Permissions.EnvironmentPermission(trust_level).Demand();
+            }
+            catch (System.Security.SecurityException)
+            {
+                continue;
+            }
+            Assign(table, "System.Security.Permissions.EnvironmentPermission", trust_level.ToString());
+            break;
+        }
+
+        //  System.Security.Permissions.FileIOPermission
+        foreach (System.Security.Permissions.PermissionState trust_level in permission_states)
+        {
+            try
+            {
+                new System.Security.Permissions.FileIOPermission(trust_level).Demand();
+            }
+            catch (System.Security.SecurityException)
+            {
+                continue;
+            }
+            Assign(table, "System.Security.Permissions.FileIOPermission", trust_level.ToString());
+            break;
+        }
+
+        //  System.Security.Permissions.IsolatedStorageFilePermission
+        foreach (System.Security.Permissions.PermissionState trust_level in permission_states)
+        {
+            try
+            {
+                new System.Security.Permissions.IsolatedStorageFilePermission(trust_level).Demand();
+            }
+            catch (System.Security.SecurityException)
+            {
+                continue;
+            }
+            Assign(table, "System.Security.Permissions.IsolatedStorageFilePermission", trust_level.ToString());
+            break;
+        }
+
+        //  System.Drawing.Printing.PrintingPermission
+        foreach (System.Drawing.Printing.PrintingPermissionLevel trust_level in
+            new System.Drawing.Printing.PrintingPermissionLevel[] {
+                System.Drawing.Printing.PrintingPermissionLevel.AllPrinting,
+                System.Drawing.Printing.PrintingPermissionLevel.DefaultPrinting,
+                System.Drawing.Printing.PrintingPermissionLevel.SafePrinting,
+                System.Drawing.Printing.PrintingPermissionLevel.NoPrinting
+            })
+        {
+            try
+            {
+                new System.Drawing.Printing.PrintingPermission(trust_level).Demand();
+            }
+            catch (System.Security.SecurityException)
+            {
+                continue;
+            }
+            Assign(table, "System.Drawing.Printing.PrintingPermission", trust_level.ToString());
+            break;
+        }
+
+        //  System.Security.Permissions.ReflectionPermission
+        foreach (System.Security.Permissions.PermissionState trust_level in permission_states)
+        {
+            try
+            {
+                new System.Security.Permissions.ReflectionPermission(trust_level).Demand();
+            }
+            catch (System.Security.SecurityException)
+            {
+                continue;
+            }
+            Assign(table, "System.Security.Permissions.ReflectionPermission", trust_level.ToString());
+            break;
+        }
+
+        //  System.Security.Permissions.RegistryPermission
+        foreach (System.Security.Permissions.PermissionState trust_level in permission_states)
+        {
+            try
+            {
+                new System.Security.Permissions.RegistryPermission(trust_level).Demand();
+            }
+            catch (System.Security.SecurityException)
+            {
+                continue;
+            }
+            Assign(table, "System.Security.Permissions.RegistryPermission", trust_level.ToString());
+            break;
+        }
+
+        //  System.Security.Permissions.SecurityPermission
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (System.Security.Permissions.SecurityPermissionFlag trust_level in
+                new System.Security.Permissions.SecurityPermissionFlag[] {
+                    System.Security.Permissions.SecurityPermissionFlag.AllFlags,
+                    System.Security.Permissions.SecurityPermissionFlag.BindingRedirects,
+                    System.Security.Permissions.SecurityPermissionFlag.Infrastructure,
+                    System.Security.Permissions.SecurityPermissionFlag.RemotingConfiguration,
+                    System.Security.Permissions.SecurityPermissionFlag.ControlAppDomain,
+                    System.Security.Permissions.SecurityPermissionFlag.ControlPrincipal,
+                    System.Security.Permissions.SecurityPermissionFlag.ControlDomainPolicy,
+                    System.Security.Permissions.SecurityPermissionFlag.SerializationFormatter,
+                    System.Security.Permissions.SecurityPermissionFlag.ControlPolicy,
+                    System.Security.Permissions.SecurityPermissionFlag.ControlEvidence,
+                    System.Security.Permissions.SecurityPermissionFlag.ControlThread,
+                    System.Security.Permissions.SecurityPermissionFlag.Execution,
+                    System.Security.Permissions.SecurityPermissionFlag.SkipVerification,
+                    System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode,
+                    System.Security.Permissions.SecurityPermissionFlag.Assertion,
+                    System.Security.Permissions.SecurityPermissionFlag.NoFlags
+                })
+            {
+                try
+                {
+                    new System.Security.Permissions.SecurityPermission(trust_level).Demand();
+                }
+                catch (System.Security.SecurityException)
+                {
+                    continue;
+                }
+                if (sb.Length > 0)
+                {
+                    sb.Append(", ");
+                }
+                sb.Append(trust_level.ToString());
+            }
+            Assign(table, "System.Security.Permissions.SecurityPermission", sb.ToString());
+        }
+
+        //  System.Net.Mail.SmtpPermission
+        foreach (System.Net.Mail.SmtpAccess trust_level in 
+            new System.Net.Mail.SmtpAccess[] {
+                System.Net.Mail.SmtpAccess.ConnectToUnrestrictedPort,
+                System.Net.Mail.SmtpAccess.Connect,
+                System.Net.Mail.SmtpAccess.None
+            })
+        {
+            try
+            {
+                new System.Net.Mail.SmtpPermission(trust_level).Demand();
+            }
+            catch (System.Security.SecurityException)
+            {
+                continue;
+            }
+            Assign(table, "System.Net.Mail.SmtpPermission", trust_level.ToString());
+            break;
+        }
+
+        //  System.Net.SocketPermission
+        foreach (System.Security.Permissions.PermissionState trust_level in permission_states)
+        {
+            try
+            {
+                new System.Net.SocketPermission(trust_level).Demand();
+            }
+            catch (System.Security.SecurityException)
+            {
+                continue;
+            }
+            Assign(table, "System.Net.SocketPermission", trust_level.ToString());
+            break;
+        }
+
+        //  System.Net.WebPermission
+        foreach (System.Security.Permissions.PermissionState trust_level in permission_states)
+        {
+            try
+            {
+                new System.Net.WebPermission(trust_level).Demand();
+            }
+            catch (System.Security.SecurityException)
+            {
+                continue;
+            }
+            Assign(table, "System.Net.WebPermission", trust_level.ToString());
+            break;
+        }
+
+        //  System.Data.SqlClient.SqlClientPermission
+        foreach (System.Security.Permissions.PermissionState trust_level in permission_states)
+        {
+            try
+            {
+                new System.Data.SqlClient.SqlClientPermission(trust_level).Demand();
+            }
+            catch (System.Security.SecurityException)
+            {
+                continue;
+            }
+            Assign(table, "System.Data.SqlClient.SqlClientPermission", trust_level.ToString());
+            break;
+        }
+
+        //  System.Data.OleDb.OleDbPermission
+        foreach (System.Security.Permissions.PermissionState trust_level in permission_states)
+        {
+            try
+            {
+                new System.Data.OleDb.OleDbPermission(trust_level).Demand();
+            }
+            catch (System.Security.SecurityException)
+            {
+                continue;
+            }
+            Assign(table, "System.Data.OleDb.OleDbPermission", trust_level.ToString());
+            break;
+        }
+
+ 
         return table;
     }
 
@@ -771,6 +1053,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         LoadInformation(GetSystemInfo());
+        LoadInformation(GetDotNetPermissionInfo());
         LoadInformation(GetSystemProcessorInfo());
         LoadInformation(GetSystemMemoryInfo());
         LoadInformation(GetSystemStorageInfo());
